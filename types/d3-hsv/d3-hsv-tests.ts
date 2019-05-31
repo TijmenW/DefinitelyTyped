@@ -36,7 +36,7 @@ cHSV = hsv('');
 
 // Color signature
 
-cRGB = rgb('steelblue');
+cRGB = rgb('steelblue')!;
 cHSV = hsv(cRGB);
 cHSV = hsv(cHSV);
 
@@ -55,12 +55,12 @@ console.log('Opacity = %d', cHSV.opacity);
 // Interpolator
 
 iString = interpolateHsv('seagreen', 'steelblue');
-iString = interpolateHsv(rgb('seagreen'), hcl('steelblue'));
-iString = interpolateHsv(rgb('seagreen'), hsv('steelblue'));
+iString = interpolateHsv(rgb('seagreen')!, hcl('steelblue')!);
+iString = interpolateHsv(rgb('seagreen')!, hsv('steelblue'));
 
 iString = interpolateHsvLong('seagreen', 'steelblue');
-iString = interpolateHsvLong(rgb('seagreen'), hcl('steelblue'));
-iString = interpolateHsvLong(rgb('seagreen'), hsv('steelblue'));
+iString = interpolateHsvLong(rgb('seagreen')!, hcl('steelblue')!);
+iString = interpolateHsvLong(rgb('seagreen')!, hsv('steelblue'));
 
 // Prototype, instanceof and type guard
 

@@ -26,8 +26,8 @@ cRGB = d3Color.color('hsl(60, 100%, 20%, 0.5)')!.rgb();
 
 cRGB = d3Color.rgb(20, 100, 200);
 cRGB = d3Color.rgb(20, 100, 200, 0.5);
-cRGB = d3Color.rgb('steelblue');
-cRGB = d3Color.rgb('rgba(20, 100, 200, 0.5)');
+cRGB = d3Color.rgb('steelblue')!;
+cRGB = d3Color.rgb('rgba(20, 100, 200, 0.5)')!;
 cRGB = d3Color.rgb(c);
 cRGB = cRGB.brighter();
 cRGB = cRGB.brighter(0.2);
@@ -42,8 +42,8 @@ console.log('Opacity = %d', cRGB.opacity);
 
 cHSL = d3Color.hsl(60, 1, 0.2);
 cHSL = d3Color.hsl(60, 1, 0.2, 0.5);
-cHSL = d3Color.hsl('steelblue');
-cHSL = d3Color.hsl('rgba(20, 100, 200, 0.5)');
+cHSL = d3Color.hsl('steelblue')!;
+cHSL = d3Color.hsl('rgba(20, 100, 200, 0.5)')!;
 cHSL = d3Color.hsl(c);
 cHSL = cHSL.brighter();
 cHSL = cHSL.brighter(0.2);
@@ -62,8 +62,8 @@ let cLab: d3Color.LabColor;
 
 cLab = d3Color.lab(120, 40, 50);
 cLab = d3Color.lab(120, 40, 50, 0.5);
-cLab = d3Color.lab('steelblue');
-cLab = d3Color.lab('rgba(20, 100, 200, 0.5)');
+cLab = d3Color.lab('steelblue')!;
+cLab = d3Color.lab('rgba(20, 100, 200, 0.5)')!;
 cLab = d3Color.lab(c);
 cLab = cLab.brighter();
 cLab = cLab.brighter(0.2);
@@ -86,8 +86,8 @@ let cHcl: d3Color.HCLColor;
 
 cHcl = d3Color.hcl(120, 40, 50);
 cHcl = d3Color.hcl(120, 40, 50, 0.5);
-cHcl = d3Color.hcl('steelblue');
-cHcl = d3Color.hcl('rgba(20, 100, 200, 0.5)');
+cHcl = d3Color.hcl('steelblue')!;
+cHcl = d3Color.hcl('rgba(20, 100, 200, 0.5)')!;
 cHcl = d3Color.hcl(c);
 cHcl = cHcl.brighter();
 cHcl = cHcl.brighter(0.2);
@@ -102,8 +102,8 @@ console.log('Opacity = %d', cHcl.opacity);
 
 cHcl = d3Color.lch(40, 50, 120);
 cHcl = d3Color.lch(40, 50, 120, 0.5);
-cHcl = d3Color.lch('steelblue');
-cHcl = d3Color.lch('rgba(20, 100, 200, 0.5)');
+cHcl = d3Color.lch('steelblue')!;
+cHcl = d3Color.lch('rgba(20, 100, 200, 0.5)')!;
 cHcl = d3Color.lch(c);
 
 // Signature tests for Cubehelix
@@ -112,8 +112,8 @@ let cCubehelix: d3Color.CubehelixColor;
 
 cCubehelix = d3Color.cubehelix(20, 100, 200);
 cCubehelix = d3Color.cubehelix(20, 100, 200, 0.5);
-cCubehelix = d3Color.cubehelix('steelblue');
-cCubehelix = d3Color.cubehelix('rgba(20, 100, 200, 0.5)');
+cCubehelix = d3Color.cubehelix('steelblue')!;
+cCubehelix = d3Color.cubehelix('rgba(20, 100, 200, 0.5)')!;
 cCubehelix = d3Color.cubehelix(c);
 cCubehelix = cCubehelix.brighter();
 cCubehelix = cCubehelix.brighter(0.2);
