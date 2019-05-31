@@ -168,7 +168,7 @@ export interface RGBColorFactory extends Function {
      *
      * @param cssColorSpecifier A CSS Color Module Level 3 specifier string.
      */
-    (cssColorSpecifier: string): RGBColor;
+    (cssColorSpecifier: string): RGBColor | null;
     /**
      * Converts the provided color instance and returns an RGB color. The color instance is converted to the RGB color space using color.rgb.
      * Note that unlike color.rgb this method always returns a new instance, even if color is already an RGB color.
@@ -242,7 +242,7 @@ export interface HSLColorFactory extends Function {
      *
      * @param cssColorSpecifier A CSS Color Module Level 3 specifier string.
      */
-    (cssColorSpecifier: string): HSLColor;
+    (cssColorSpecifier: string): HSLColor | null;
     /**
      * Converts the provided color instance and returns an HSL color.
      * The color instance is converted to the RGB color space using color.rgb and then converted to HSL.
@@ -317,7 +317,7 @@ export interface LabColorFactory extends Function {
      *
      * @param cssColorSpecifier A CSS Color Module Level 3 specifier string.
      */
-    (cssColorSpecifier: string): LabColor;
+    (cssColorSpecifier: string): LabColor | null;
     /**
      * Converts the provided color instance and returns a Lab color.
      * The color instance is converted to the RGB color space using color.rgb and then converted to Lab.
@@ -405,7 +405,7 @@ export interface HCLColorFactory extends Function {
      *
      * @param cssColorSpecifier A CSS Color Module Level 3 specifier string.
      */
-    (cssColorSpecifier: string): HCLColor;
+    (cssColorSpecifier: string): HCLColor | null;
     /**
      * Converts the provided color instance and returns an HCL color.
      * The color instance is converted to the RGB color space using color.rgb and then converted to HCL.
@@ -440,7 +440,7 @@ export interface LCHColorFactory {
      *
      * @param cssColorSpecifier A CSS color Module Level 3 specifier string.
      */
-    (cssColorSpecifier: string): HCLColor;
+    (cssColorSpecifier: string): HCLColor | null;
     /**
      * Converts the provided color instance and returns an HCL color.
      * The color instance is converted to the RGB color space using color.rgb and then converted to HCL.
@@ -512,7 +512,7 @@ export interface CubehelixColorFactory extends Function {
      *
      * @param cssColorSpecifier A CSS Color Module Level 3 specifier string.
      */
-    (cssColorSpecifier: string): CubehelixColor;
+    (cssColorSpecifier: string): CubehelixColor | null;
     /**
      * Converts the provided color instance and returns a Cubehelix color.
      * The color instance is specified, it is converted to the RGB color space using color.rgb and then converted to Cubehelix.
