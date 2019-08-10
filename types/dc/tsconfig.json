@@ -1,7 +1,8 @@
 {
     "files": [
         "index.d.ts",
-        "dc-tests.ts"
+        "dc-tests.ts",
+        "dc-tests-2.ts"
     ],
     "compilerOptions": {
         "module": "commonjs",
