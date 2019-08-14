@@ -40,7 +40,7 @@ interface IYelpDataExtended {
  *  Step0: Load data from json file           *
  *                            *
  ********************************************************/
-d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
+d3.json("data/yelp_test_set_business.json").then((yelp_data: IYelpData[]) => {
 
     /********************************************************
      *                           *
@@ -72,7 +72,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
     var cityGroup: CrossFilter.Group<IYelpData, string, string> = cityDimension.group();
     var cityDimensionGroup: CrossFilter.Group<IYelpData, string, IYelpDataExtended> = cityDimension.group().reduce(
         //add
-        (p: IYelpDataExtended, v:IYelpData) => {
+        (p: IYelpDataExtended, v: IYelpData) => {
             ++p.count;
             p.review_sum += v.review_count;
             p.star_sum += v.stars;
@@ -81,7 +81,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
             return p;
         },
         //remove
-        (p: IYelpDataExtended, v:IYelpData) => {
+        (p: IYelpDataExtended, v: IYelpData) => {
             --p.count;
             p.review_sum -= v.review_count;
             p.star_sum -= v.stars;
@@ -91,7 +91,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
         },
         //init
         () => {
-            return {count: 0, review_sum: 0, star_sum: 0, review_avg: 0, star_avg: 0};
+            return { count: 0, review_sum: 0, star_sum: 0, review_avg: 0, star_avg: 0 };
         }
     );
 
@@ -113,11 +113,11 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
         .dimension(cityDimension)
         .group(cityDimensionGroup)
         .transitionDuration(1500)
-        .colors(["#a60000","#ff0000", "#ff4040","#ff7373","#67e667","#39e639","#00cc00"])
+        .colors(["#a60000", "#ff0000", "#ff4040", "#ff7373", "#67e667", "#39e639", "#00cc00"])
         .colorDomain([-12000, 12000])
-        .x(d3.scale.linear().domain([0, 5.5]))
-        .y(d3.scale.linear().domain([0, 5.5]))
-        .r(d3.scale.linear().domain([0, 2500]))
+        .x(d3.scaleLinear().domain([0, 5.5]))
+        .y(d3.scaleLinear().domain([0, 5.5]))
+        .r(d3.scaleLinear().domain([0, 2500]))
         .keyAccessor((p: any) => p.value.star_avg)
         .valueAccessor((p: any) => p.value.review_avg)
         .radiusValueAccessor((p: any) => p.value.count)
@@ -143,7 +143,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
             dc.events.trigger(() => {
                 if (chart.filter()) {
                     console.log(chart.filter());
-                    volumeChart.filter([chart.filter()-.25,chart.filter()-(-0.25)]);
+                    volumeChart.filter([chart.filter() - .25, chart.filter() - (-0.25)]);
                 }
                 else volumeChart.filterAll();
             }));
@@ -156,11 +156,11 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
         .transitionDuration(1500)
         .centerBar(true)
         .gap(17)
-        .x(d3.scale.linear().domain([0.5, 5.5]))
+        .x(d3.scaleLinear().domain([0.5, 5.5]))
         .elasticY(true)
         .on("filtered", (chart: dc.BarChart) =>
             dc.events.trigger(() => {
-                if(chart.filter()) {
+                if (chart.filter()) {
                     console.log(chart.filter());
                     lineChart.filter(chart.filter());
                 }
@@ -169,7 +169,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
                 }
             }))
         .xAxis()
-            .tickFormat((v: string) => v);
+        .tickFormat((v: string) => v);
 
     console.log(startValueGroup.top(1)[0].value);
 
@@ -178,12 +178,12 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
         .height(200)
         .dimension(startValue)
         .group(startValueGroup)
-        .x(d3.scale.linear().domain([0.5, 5.5]))
+        .x(d3.scaleLinear().domain([0.5, 5.5]))
         .valueAccessor((d: any) => d.value)
         .renderHorizontalGridLines(true)
         .elasticY(true)
         .xAxis()
-            .tickFormat((v: string) => v);
+        .tickFormat((v: string) => v);
 
     lineChart.legend(dc.legend().x(200).y(10).itemHeight(13).gap(5));
 
@@ -193,7 +193,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
         .dimension(cityDimension)
         .group(cityGroup)
         .renderLabel(true)
-        .colors(["#a60000","#ff0000", "#ff4040","#ff7373","#67e667","#39e639","#00cc00"])
+        .colors(["#a60000", "#ff0000", "#ff4040", "#ff7373", "#67e667", "#39e639", "#00cc00"])
         .colorDomain([0, 0])
         .renderlet((chart: dc.RowChart) => bubbleChart.filter(chart.filter()))
         .on("filtered", (chart: dc.RowChart) =>
@@ -211,7 +211,7 @@ d3.json("data/yelp_test_set_business.json", (yelp_data:IYelpData[]) => {
             (d: IYelpData) => d.city,
             (d: IYelpData) => d.stars,
             (d: IYelpData) => d.review_count,
-            (d: IYelpData) => '<a href=\"http://maps.google.com/maps?z=12&t=m&q=loc:' + d.latitude + '+' + d.longitude +"\" target=\"_blank\">Map</a>"
+            (d: IYelpData) => '<a href=\"http://maps.google.com/maps?z=12&t=m&q=loc:' + d.latitude + '+' + d.longitude + "\" target=\"_blank\">Map</a>"
         ])
         .sortBy((d: IYelpData) => d.stars)
         // (optional) sort order, :default ascending
@@ -257,18 +257,22 @@ var nasdaqTable = dc.dataTable('.dc-data-table');
     </div>
 */
 
-d3.csv('ndx.csv').then(function (data) {
+d3.csv('ndx.csv').then(function (data_input) {
 
     var dateFormatSpecifier = '%m/%d/%Y';
     var dateFormat = d3.timeFormat(dateFormatSpecifier);
     var dateFormatParser = d3.timeParse(dateFormatSpecifier);
     var numberFormat = d3.format('.2f');
 
-    data.forEach(function (d) {
-        d.dd = dateFormatParser(d.date);
-        d.month = d3.timeMonth(d.dd); // pre-calculate month for better performance
-        d.close = +d.close; // coerce to number
-        d.open = +d.open;
+    let data = data_input.map((d) => {
+        return {
+            dd: dateFormatParser(d.date),
+            month: d3.timeMonth(new Date(d.dd)), // pre-calculate month for better performance
+            close: +d.close, // coerce to number
+            open: +d.open,
+            volume: +d.volume,
+            ...d
+        }
     });
 
     var ndx = crossfilter(data);
@@ -278,7 +282,15 @@ d3.csv('ndx.csv').then(function (data) {
         return d3.timeYear(d.dd).getFullYear();
     });
 
-    var yearlyPerformanceGroup = yearlyDimension.group().reduce(
+    var yearlyPerformanceGroup = yearlyDimension.group().reduce<{
+        count: number,
+        absGain: number,
+        fluctuation: number,
+        fluctuationPercentage: number,
+        sumIndex: number,
+        avgIndex: number,
+        percentageGain: number
+    }>(
         /* callback for when data is added to the current filter results */
         function (p, v) {
             ++p.count;
@@ -330,7 +342,11 @@ d3.csv('ndx.csv').then(function (data) {
     var volumeByMonthGroup = moveMonths.group().reduceSum(function (d) {
         return d.volume / 500000;
     });
-    var indexAvgByMonthGroup = moveMonths.group().reduce(
+    var indexAvgByMonthGroup = moveMonths.group().reduce<{
+        days: number,
+        total: number,
+        avg: number
+    }>(
         function (p, v) {
             ++p.days;
             p.total += (v.open + v.close) / 2;
@@ -344,7 +360,7 @@ d3.csv('ndx.csv').then(function (data) {
             return p;
         },
         function () {
-            return {days: 0, total: 0, avg: 0};
+            return { days: 0, total: 0, avg: 0 };
         }
     );
 
@@ -390,12 +406,12 @@ d3.csv('ndx.csv').then(function (data) {
         .height(250)
 
         .transitionDuration(1500)
-        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .margins({ top: 10, right: 50, bottom: 30, left: 40 })
         .dimension(yearlyDimension)
 
         .group(yearlyPerformanceGroup)
 
-        .colors(d3.schemeRdYlGn[9])
+        .colors(d3.schemeRdYlGn[9].slice())
 
         .colorDomain([-500, 500])
 
@@ -502,7 +518,7 @@ d3.csv('ndx.csv').then(function (data) {
     dayOfWeekChart /* dc.rowChart('#day-of-week-chart', 'chartGroup') */
         .width(180)
         .height(180)
-        .margins({top: 20, left: 10, right: 10, bottom: 20})
+        .margins({ top: 20, left: 10, right: 10, bottom: 20 })
         .group(dayOfWeekGroup)
         .dimension(dayOfWeek)
 
@@ -521,7 +537,7 @@ d3.csv('ndx.csv').then(function (data) {
     fluctuationChart /* dc.barChart('#volume-month-chart', 'chartGroup') */
         .width(420)
         .height(180)
-        .margins({top: 10, right: 50, bottom: 30, left: 40})
+        .margins({ top: 10, right: 50, bottom: 30, left: 40 })
         .dimension(fluctuation)
         .group(fluctuationGroup)
         .elasticY(true)
@@ -551,7 +567,7 @@ d3.csv('ndx.csv').then(function (data) {
         .width(990)
         .height(200)
         .transitionDuration(1000)
-        .margins({top: 30, right: 50, bottom: 25, left: 40})
+        .margins({ top: 30, right: 50, bottom: 25, left: 40 })
         .dimension(moveMonths)
         .mouseZoomable(true)
 
@@ -584,7 +600,7 @@ d3.csv('ndx.csv').then(function (data) {
 
     volumeChart.width(990) /* dc.barChart('#monthly-volume-chart', 'chartGroup'); */
         .height(40)
-        .margins({top: 0, right: 50, bottom: 20, left: 40})
+        .margins({ top: 0, right: 50, bottom: 20, left: 40 })
         .dimension(moveMonths)
         .group(volumeByMonthGroup)
         .centerBar(true)

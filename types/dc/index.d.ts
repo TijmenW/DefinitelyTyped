@@ -49,7 +49,7 @@ declare namespace dc {
 
     // http://dc-js.github.io/dc.js/docs/html/dc.units.html
     export interface UnitFunction {
-        (start: number|Date, end: number|Date, domain?: number|Array<string>): number | Array<number|Date|string>;
+        (start: number | Date, end: number | Date, domain?: number | Array<string>): number | Array<number | Date | string>;
     }
 
     export interface FloatPointUnits {
@@ -99,18 +99,22 @@ declare namespace dc {
         round(n: number): number;
     }
 
+    type D3TimeIntervalName = 'millis' | 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year'
+
     export interface Utils {
         printSingleValue(filter: any): string;
-        add(l: any, r: any): any;
-        subtract(l: any, r: any): any;
-        isNumber(n: any): boolean;
+        add(l: Date, r: number, t?: d3.TimeInterval | D3TimeIntervalName): Date;
+        add(l: Number, r: number | string): number;
+        subtract(l: Date, r: number, t?: d3.TimeInterval | D3TimeIntervalName): Date;
+        subtract(l: Number, r: number | string): number;
+        isNumber(n: any): n is Number;
         isFloat(n: any): boolean;
         isInteger(n: any): boolean;
         isNegligible(n: any): boolean;
         clamp(n: number, min: number, max: number): number;
         uniqueId(): number;
         nameToId(name: string): string;
-        appendOrSelect(parent: d3.Selection<any>, selector: string, tag: any): d3.Selection<any>;
+        appendOrSelect(parent: d3.Selection<any, any, any, any>, selector: string, tag: any): d3.Selection<any, any, any, any>;
         safeNumber(n: any): number;
     }
 
@@ -138,11 +142,11 @@ declare namespace dc {
         group: IBiGetSet<any, string, T>;
         ordering: IGetSet<Accessor<any, any>, T>;
         filterAll(): void;
-        select(selector: d3.Selection<any> | string): d3.Selection<any>;
-        selectAll(selector: d3.Selection<any> | string): d3.Selection<any>;
-        anchor(anchor: BaseMixin<any> | d3.Selection<any> | string, chartGroup?: string): d3.Selection<any>;
+        select(selector: d3.Selection<any, any, any, any> | string): d3.Selection<any, any, any, any>;
+        selectAll(selector: d3.Selection<any, any, any, any> | string): d3.Selection<any, any, any, any>;
+        anchor(anchor: BaseMixin<any> | d3.Selection<any, any, any, any> | string, chartGroup?: string): d3.Selection<any, any, any, any>;
         anchorName(): string;
-        svg: IGetSet<d3.Selection<any>, d3.Selection<any>>;
+        svg: IGetSet<d3.Selection<any, any, any, any>, d3.Selection<any, any, any, any>>;
         resetSvg(): void;
         filterPrinter: IGetSet<(filters: Array<any>) => string, T>;
         controlsUseVisibility: IGetSet<boolean, T>;
@@ -212,9 +216,9 @@ declare namespace dc {
         rangeChart: IGetSet<BaseMixin<any>, T>;
         zoomScale: IGetSet<Array<any>, T>;
         zoomOutRestrict: IGetSet<boolean, T>;
-        g: IGetSet<d3.Selection<any>, T>;
+        g: IGetSet<d3.Selection<any, any, any, any>, T>;
         mouseZoomable: IGetSet<boolean, T>;
-        chartBodyG(): d3.Selection<any>;
+        chartBodyG(): d3.Selection<any, any, any, any>;
         x: IGetSet<(n: any) => any, T>;
         xUnits: IGetSet<UnitFunction, T>;
         xAxis: IGetSet<d3.svg.Axis, T>;
@@ -247,7 +251,7 @@ declare namespace dc {
         hideStack(name: string): void;
         showStack(name: string): void;
         // title(stackName: string, titleFn: Accessor<any, T>);
-        stackLayout: IGetSet<d3.layout.Stack<any[], any>, T>;
+        stackLayout: IGetSet<d3.Stack<any, any[], any>, T>;
     }
 
     export interface CapMixin<T> {
@@ -355,9 +359,9 @@ declare namespace dc {
 
     export interface GeoChoroplethChart extends ColorMixin<GeoChoroplethChart>, BaseMixin<GeoChoroplethChart> {
         overlayGeoJson(json: any, name: string, keyAccessor: Accessor<any, any>): void;
-        projection: IGetSet<d3.geo.Projection, GeoChoroplethChart>;
+        projection: IGetSet<d3.GeoProjection, GeoChoroplethChart>;
         geoJsons(): Array<GeoChoroplethLayer>;
-        geoPath(): d3.geo.Path;
+        geoPath(): d3.GeoPath;
         removeGeoJson(name: string): void;
     }
 
@@ -379,7 +383,7 @@ declare namespace dc {
 
     export interface ScatterPlot extends CoordinateGridMixin<ScatterPlot> {
         existenceAccessor: IGetSet<Accessor<any, boolean>, ScatterPlot>;
-        symbol: IGetSet<d3.svg.Symbol<any>, ScatterPlot>;
+        symbol: IGetSet<d3.Symbol<any, any>, ScatterPlot>;
         symbolSize: IGetSet<number, ScatterPlot>;
         highlightedSize: IGetSet<number, ScatterPlot>;
         hiddenSize: IGetSet<number, ScatterPlot>;
@@ -418,7 +422,7 @@ declare namespace dc {
     export interface SelectMenu extends BaseMixin<SelectMenu> {
         order: IGetSet<(a: any, b: any) => number, SelectMenu>;
         promptText: IGetSet<string, SelectMenu>;
-        filterDisplayed: IGetSet<(a: {value: any, key: any}, index: number) => boolean, SelectMenu>;
+        filterDisplayed: IGetSet<(a: { value: any, key: any }, index: number) => boolean, SelectMenu>;
         multiple: IGetSet<boolean, SelectMenu>;
         promptValue: IGetSet<any, SelectMenu>;
         numberVisible: IGetSet<number, SelectMenu>;
@@ -443,7 +447,7 @@ declare namespace dc {
         renderAll(group?: string): void;
         redrawAll(group?: string): void;
         disableTransitions: boolean;
-        transition(selections: d3.Selection<any>, duration: number, callback: (s: d3.Selection<any>) => void): void;
+        transition(selections: d3.Selection<any, any, any, any>, duration: number, callback: (s: d3.Selection<any, any, any, any>) => void): void;
 
         units: Units;
         events: Events;
