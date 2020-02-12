@@ -40,19 +40,20 @@ interface IYelpDataExtended {
  *  Step0: Load data from json file           *
  *                            *
  ********************************************************/
-d3.json<IYelpData[]>("data/yelp_test_set_business.json").then((yelp_data: IYelpData[]) => {
 
+d3.json<IYelpData[]>('data/yelp_test_set_business.json').then(
+  (yelp_data: IYelpData[]) => {
     /********************************************************
      *                           *
      *   Step1: Create the dc.js chart objects & ling to div *
      *                           *
      ********************************************************/
-    var bubbleChart: dc.BubbleChart = dc.bubbleChart("#dc-bubble-graph");
-    var pieChart: dc.PieChart = dc.pieChart("#dc-pie-graph");
-    var volumeChart: dc.BarChart = dc.barChart("#dc-volume-chart");
-    var lineChart: dc.LineChart = dc.lineChart("#dc-line-chart");
-    var dataTable: dc.DataTableWidget = dc.dataTable("#dc-table-graph");
-    var rowChart: dc.RowChart = dc.rowChart("#dc-row-graph");
+    var bubbleChart: dc.BubbleChart = dc.bubbleChart('#dc-bubble-graph');
+    var pieChart: dc.PieChart = dc.pieChart('#dc-pie-graph');
+    var volumeChart: dc.BarChart = dc.barChart('#dc-volume-chart');
+    var lineChart: dc.LineChart = dc.lineChart('#dc-line-chart');
+    var dataTable: dc.DataTableWidget = dc.dataTable('#dc-table-graph');
+    var rowChart: dc.RowChart = dc.rowChart('#dc-row-graph');
 
     /********************************************************
      *                           *
@@ -68,39 +69,64 @@ d3.json<IYelpData[]>("data/yelp_test_set_business.json").then((yelp_data: IYelpD
      ********************************************************/
 
     // for volumechart
-    var cityDimension: CrossFilter.Dimension<IYelpData, string> = ndx.dimension((d: IYelpData) => d.city);
-    var cityGroup: CrossFilter.Group<IYelpData, string, string> = cityDimension.group();
-    var cityDimensionGroup: CrossFilter.Group<IYelpData, string, IYelpDataExtended> = cityDimension.group().reduce(
-        //add
-        (p: IYelpDataExtended, v: IYelpData) => {
-            ++p.count;
-            p.review_sum += v.review_count;
-            p.star_sum += v.stars;
-            p.review_avg = p.review_sum / p.count;
-            p.star_avg = p.star_sum / p.count;
-            return p;
-        },
-        //remove
-        (p: IYelpDataExtended, v: IYelpData) => {
-            --p.count;
-            p.review_sum -= v.review_count;
-            p.star_sum -= v.stars;
-            p.review_avg = p.review_sum / p.count;
-            p.star_avg = p.star_sum / p.count;
-            return p;
-        },
-        //init
-        () => {
-            return { count: 0, review_sum: 0, star_sum: 0, review_avg: 0, star_avg: 0 };
-        }
+    var cityDimension: CrossFilter.Dimension<IYelpData, string> = ndx.dimension(
+      (d: IYelpData) => d.city,
+    );
+    var cityGroup: CrossFilter.Group<
+      IYelpData,
+      string,
+      string
+    > = cityDimension.group();
+    var cityDimensionGroup: CrossFilter.Group<
+      IYelpData,
+      string,
+      IYelpDataExtended
+    > = cityDimension.group().reduce(
+      //add
+      (p: IYelpDataExtended, v: IYelpData) => {
+        ++p.count;
+        p.review_sum += v.review_count;
+        p.star_sum += v.stars;
+        p.review_avg = p.review_sum / p.count;
+        p.star_avg = p.star_sum / p.count;
+        return p;
+      },
+      //remove
+      (p: IYelpDataExtended, v: IYelpData) => {
+        --p.count;
+        p.review_sum -= v.review_count;
+        p.star_sum -= v.stars;
+        p.review_avg = p.review_sum / p.count;
+        p.star_avg = p.star_sum / p.count;
+        return p;
+      },
+      //init
+      () => {
+        return {
+          count: 0,
+          review_sum: 0,
+          star_sum: 0,
+          review_avg: 0,
+          star_avg: 0,
+        };
+      },
     );
 
     // for pieChart
-    var startValue: CrossFilter.Dimension<IYelpData, number> = ndx.dimension((d: IYelpData) => d.stars * 1.0);
-    var startValueGroup: CrossFilter.Group<IYelpData, number, number> = startValue.group();
+    var startValue: CrossFilter.Dimension<IYelpData, number> = ndx.dimension(
+      (d: IYelpData) => d.stars * 1.0,
+    );
+    var startValueGroup: CrossFilter.Group<
+      IYelpData,
+      number,
+      number
+    > = startValue.group();
 
     // For datatable
-    var businessDimension: CrossFilter.Dimension<IYelpData, string> = ndx.dimension((d: IYelpData) => d.business_id);
+    var businessDimension: CrossFilter.Dimension<
+      IYelpData,
+      string
+    > = ndx.dimension((d: IYelpData) => d.business_id);
     /********************************************************
      *                           *
      *   Step4: Create the Visualisations          *
@@ -108,114 +134,144 @@ d3.json<IYelpData[]>("data/yelp_test_set_business.json").then((yelp_data: IYelpD
      ********************************************************/
 
     bubbleChart
-        .width(650)
-        .height(300)
-        .dimension(cityDimension)
-        .group(cityDimensionGroup)
-        .transitionDuration(1500)
-        .colors(["#a60000", "#ff0000", "#ff4040", "#ff7373", "#67e667", "#39e639", "#00cc00"])
-        .colorDomain([-12000, 12000])
-        .x(d3.scaleLinear().domain([0, 5.5]))
-        .y(d3.scaleLinear().domain([0, 5.5]))
-        .r(d3.scaleLinear().domain([0, 2500]))
-        .keyAccessor((p: any) => p.value.star_avg)
-        .valueAccessor((p: any) => p.value.review_avg)
-        .radiusValueAccessor((p: any) => p.value.count)
-        .transitionDuration(1500)
-        .elasticY(true)
-        .yAxisPadding(1)
-        .xAxisPadding(1)
-        .label((p: any) => p.key)
-        .renderLabel(true)
-        .renderlet((chart: dc.BubbleChart) => rowChart.filter(chart.filter()))
-        .on("postRedraw", (chart: dc.BubbleChart) => dc.events.trigger(() => rowChart.filter(chart.filter())));
+      .width(650)
+      .height(300)
+      .dimension(cityDimension)
+      .group(cityDimensionGroup)
+      .transitionDuration(1500)
+      .colors([
+        '#a60000',
+        '#ff0000',
+        '#ff4040',
+        '#ff7373',
+        '#67e667',
+        '#39e639',
+        '#00cc00',
+      ])
+      .colorDomain([-12000, 12000])
+      .x(d3.scaleLinear().domain([0, 5.5]))
+      .y(d3.scaleLinear().domain([0, 5.5]))
+      .r(d3.scaleLinear().domain([0, 2500]))
+      .keyAccessor((p: any) => p.value.star_avg)
+      .valueAccessor((p: any) => p.value.review_avg)
+      .radiusValueAccessor((p: any) => p.value.count)
+      .transitionDuration(1500)
+      .elasticY(true)
+      .yAxisPadding(1)
+      .xAxisPadding(1)
+      .label((p: any) => p.key)
+      .renderLabel(true)
+      .renderlet((chart: dc.BubbleChart) => rowChart.filter(chart.filter()))
+      .on('postRedraw', (chart: dc.BubbleChart) =>
+        dc.events.trigger(() => rowChart.filter(chart.filter())),
+      );
 
     pieChart
-        .width(200)
-        .height(200)
-        .transitionDuration(1500)
-        .dimension(startValue)
-        .group(startValueGroup)
-        .radius(90)
-        .minAngleForLabel(0)
-        .label((d: any) => d.data.key)
-        .on("filtered", (chart: dc.PieChart) =>
-            dc.events.trigger(() => {
-                if (chart.filter()) {
-                    console.log(chart.filter());
-                    volumeChart.filter([chart.filter() - .25, chart.filter() - (-0.25)]);
-                }
-                else volumeChart.filterAll();
-            }));
+      .width(200)
+      .height(200)
+      .transitionDuration(1500)
+      .dimension(startValue)
+      .group(startValueGroup)
+      .radius(90)
+      .minAngleForLabel(0)
+      .label((d: any) => d.data.key)
+      .on('filtered', (chart: dc.PieChart) =>
+        dc.events.trigger(() => {
+          if (chart.filter()) {
+            console.log(chart.filter());
+            volumeChart.filter([chart.filter() - 0.25, chart.filter() - -0.25]);
+          } else volumeChart.filterAll();
+        }),
+      );
 
     volumeChart
-        .width(230)
-        .height(200)
-        .dimension(startValue)
-        .group(startValueGroup)
-        .transitionDuration(1500)
-        .centerBar(true)
-        .gap(17)
-        .x(d3.scaleLinear().domain([0.5, 5.5]))
-        .elasticY(true)
-        .on("filtered", (chart: dc.BarChart) =>
-            dc.events.trigger(() => {
-                if (chart.filter()) {
-                    console.log(chart.filter());
-                    lineChart.filter(chart.filter());
-                }
-                else {
-                    lineChart.filterAll()
-                }
-            }))
-        .xAxis()
-        .tickFormat((v: string) => v);
+      .width(230)
+      .height(200)
+      .dimension(startValue)
+      .group(startValueGroup)
+      .transitionDuration(1500)
+      .centerBar(true)
+      .gap(17)
+      .x(d3.scaleLinear().domain([0.5, 5.5]))
+      .elasticY(true)
+      .on('filtered', (chart: dc.BarChart) =>
+        dc.events.trigger(() => {
+          if (chart.filter()) {
+            console.log(chart.filter());
+            lineChart.filter(chart.filter());
+          } else {
+            lineChart.filterAll();
+          }
+        }),
+      )
+      .xAxis()
+      .tickFormat((v: string) => v);
 
     console.log(startValueGroup.top(1)[0].value);
 
     lineChart
-        .width(230)
-        .height(200)
-        .dimension(startValue)
-        .group(startValueGroup)
-        .x(d3.scaleLinear().domain([0.5, 5.5]))
-        .valueAccessor((d: any) => d.value)
-        .renderHorizontalGridLines(true)
-        .elasticY(true)
-        .xAxis()
-        .tickFormat((v: string) => v);
+      .width(230)
+      .height(200)
+      .dimension(startValue)
+      .group(startValueGroup)
+      .x(d3.scaleLinear().domain([0.5, 5.5]))
+      .valueAccessor((d: any) => d.value)
+      .renderHorizontalGridLines(true)
+      .elasticY(true)
+      .xAxis()
+      .tickFormat((v: string) => v);
 
-    lineChart.legend(dc.legend().x(200).y(10).itemHeight(13).gap(5));
+    lineChart.legend(
+      dc
+        .legend()
+        .x(200)
+        .y(10)
+        .itemHeight(13)
+        .gap(5),
+    );
 
     rowChart
-        .width(340)
-        .height(850)
-        .dimension(cityDimension)
-        .group(cityGroup)
-        .renderLabel(true)
-        .colors(["#a60000", "#ff0000", "#ff4040", "#ff7373", "#67e667", "#39e639", "#00cc00"])
-        .colorDomain([0, 0])
-        .renderlet((chart: dc.RowChart) => bubbleChart.filter(chart.filter()))
-        .on("filtered", (chart: dc.RowChart) =>
-            dc.events.trigger(() =>
-                bubbleChart.filter(chart.filter())));
+      .width(340)
+      .height(850)
+      .dimension(cityDimension)
+      .group(cityGroup)
+      .renderLabel(true)
+      .colors([
+        '#a60000',
+        '#ff0000',
+        '#ff4040',
+        '#ff7373',
+        '#67e667',
+        '#39e639',
+        '#00cc00',
+      ])
+      .colorDomain([0, 0])
+      .renderlet((chart: dc.RowChart) => bubbleChart.filter(chart.filter()))
+      .on('filtered', (chart: dc.RowChart) =>
+        dc.events.trigger(() => bubbleChart.filter(chart.filter())),
+      );
 
     dataTable
-        .width(800)
-        .height(800)
-        .dimension(businessDimension)
-        .group((d: any) => "List of all Selected Businesses")
-        .size(100)
-        .columns([
-            (d: IYelpData) => d.name,
-            (d: IYelpData) => d.city,
-            (d: IYelpData) => d.stars,
-            (d: IYelpData) => d.review_count,
-            (d: IYelpData) => '<a href=\"http://maps.google.com/maps?z=12&t=m&q=loc:' + d.latitude + '+' + d.longitude + "\" target=\"_blank\">Map</a>"
-        ])
-        .sortBy((d: IYelpData) => d.stars)
-        // (optional) sort order, :default ascending
-        .order(d3.ascending);
+      .width(800)
+      .height(800)
+      .dimension(businessDimension)
+      .group((d: any) => 'List of all Selected Businesses')
+      .size(100)
+      .columns([
+        (d: IYelpData) => d.name,
+        (d: IYelpData) => d.city,
+        (d: IYelpData) => d.stars,
+        (d: IYelpData) => d.review_count,
+        (d: IYelpData) =>
+          '<a href="http://maps.google.com/maps?z=12&t=m&q=loc:' +
+          d.latitude +
+          '+' +
+          d.longitude +
+          '" target="_blank">Map</a>',
+      ])
+      .sortBy((d: IYelpData) => d.stars)
+      // (optional) sort order, :default ascending
+      .order(d3.ascending);
     /********************************************************
      *                           *
      *   Step6:  Render the Charts             *
@@ -223,7 +279,8 @@ d3.json<IYelpData[]>("data/yelp_test_set_business.json").then((yelp_data: IYelpD
      ********************************************************/
 
     dc.renderAll();
-});
+  },
+);
 
 // Stolen from website
 /* global dc,d3,crossfilter */
@@ -401,72 +458,77 @@ d3.csv('ndx.csv').then(function (data_input) {
 
     yearlyBubbleChart /* dc.bubbleChart('#yearly-bubble-chart', 'chartGroup') */
 
-        .width(990)
+      .width(990)
 
-        .height(250)
+      .height(250)
 
-        .transitionDuration(1500)
-        .margins({ top: 10, right: 50, bottom: 30, left: 40 })
-        .dimension(yearlyDimension)
+      .transitionDuration(1500)
+      .margins({ top: 10, right: 50, bottom: 30, left: 40 })
+      .dimension(yearlyDimension)
 
-        .group(yearlyPerformanceGroup)
+      .group(yearlyPerformanceGroup)
 
-        .colors(d3.schemeRdYlGn[9].slice())
+      .colors(d3.schemeRdYlGn[9].slice())
 
-        .colorDomain([-500, 500])
+      .colorDomain([-500, 500])
 
-        .colorAccessor(function (d) {
-            return d.value.absGain;
+      .colorAccessor(function(d) {
+    return d.value.absGain;
+    })
+
+      .keyAccessor(function(p) {
+        return p.value.absGain;
         })
 
-        .keyAccessor(function (p) {
-            return p.value.absGain;
-        })
+      .valueAccessor(function(p) {
+        return p.value.percentageGain;
+      })
 
-        .valueAccessor(function (p) {
-            return p.value.percentageGain;
-        })
-
-        .radiusValueAccessor(function (p) {
+      .radiusValueAccessor(function (p) {
             return p.value.fluctuationPercentage;
-        })
-        .maxBubbleRelativeSize(0.3)
-        .x(d3.scaleLinear().domain([-2500, 2500]))
-        .y(d3.scaleLinear().domain([-100, 100]))
-        .r(d3.scaleLinear().domain([0, 4000]))
+      })
+      .maxBubbleRelativeSize(0.3)
+      .x(d3.scaleLinear().domain([-2500, 2500]))
+      .y(d3.scaleLinear().domain([-100, 100]))
+      .r(d3.scaleLinear().domain([0, 4000]))
 
-        .elasticY(true)
-        .elasticX(true)
+      .elasticY(true)
+      .elasticX(true)
 
-        .yAxisPadding(100)
-        .xAxisPadding(500)
+      .yAxisPadding(100)
+      .xAxisPadding(500)
 
-        .renderHorizontalGridLines(true)
+      .renderHorizontalGridLines(true)
 
-        .renderVerticalGridLines(true)
+      .renderVerticalGridLines(true)
 
-        .xAxisLabel('Index Gain')
+      .xAxisLabel('Index Gain')
 
-        .yAxisLabel('Index Gain %')
+      .yAxisLabel('Index Gain %')
 
-        .renderLabel(true)
-        .label(function (p) {
-            return p.key;
-        })
+      .renderLabel(true)
+      .label(function(p) {
+        return p.key;
+      })
 
-        .renderTitle(true)
-        .title(function (p) {
-            return [
-                p.key,
-                'Index Gain: ' + numberFormat(p.value.absGain),
-                'Index Gain in Percentage: ' + numberFormat(p.value.percentageGain) + '%',
-                'Fluctuation / Index Ratio: ' + numberFormat(p.value.fluctuationPercentage) + '%'
-            ].join('\n');
-        })
+      .renderTitle(true)
+      .title(function(p) {
+        return [
+          p.key,
+          'Index Gain: ' + numberFormat(p.value.absGain),
+          'Index Gain in Percentage: ' +
+            numberFormat(p.value.percentageGain) +
+            '%',
+          'Fluctuation / Index Ratio: ' +
+            numberFormat(p.value.fluctuationPercentage) +
+            '%',
+        ].join('\n');
+      })
 
-        .yAxis().tickFormat(function (v: number | string) {
-            return v + '%';
-        });
+      .yAxis()
+      .tickFormat(function(v: number | string) {
+        return v + '%';
+      });
 
 
     gainOrLossChart /* dc.pieChart('#gain-loss-chart', 'chartGroup') */
