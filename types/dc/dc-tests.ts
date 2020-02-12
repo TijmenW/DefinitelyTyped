@@ -40,7 +40,7 @@ interface IYelpDataExtended {
  *  Step0: Load data from json file           *
  *                            *
  ********************************************************/
-d3.json("data/yelp_test_set_business.json").then((yelp_data: IYelpData[]) => {
+d3.json<IYelpData[]>("data/yelp_test_set_business.json").then((yelp_data: IYelpData[]) => {
 
     /********************************************************
      *                           *
@@ -464,7 +464,7 @@ d3.csv('ndx.csv').then(function (data_input) {
             ].join('\n');
         })
 
-        .yAxis().tickFormat(function (v) {
+        .yAxis().tickFormat(function (v: number | string) {
             return v + '%';
         });
 
